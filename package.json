@@ -15,7 +15,6 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
-    "clui": "^0.3.6",
     "figlet": "^1.5.0",
     "inquirer": "^7.3.3",
     "jimp": "^0.16.1"

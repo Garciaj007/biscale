@@ -6,10 +6,8 @@ const fs = require("fs");
 const chalk = require("chalk");
 const figlet = require("figlet");
 const inquirer = require("inquirer");
-const clui = require("clui");
 
 const run = async () => {
-  const spinner = new clui.Spinner("Processing...", ['|','/','-','\\','-']);
   const input = await inquirer.prompt([{
       name: "dir",
       type: "input",
@@ -46,13 +44,9 @@ const run = async () => {
     }
   ]);
   try {
-    if (!fs.existsSync("Original")) fs.mkdirSync("Original");
     if (!fs.existsSync(input.dir)) fs.mkdirSync(input.dir);
     const origins = fs.readdirSync(process.cwd()).filter(el => /\.(jpe?g|png|gif|bmp|tiff)$/i.test(el));
     origins.forEach((filename, index) => {
-
-      spinner.start();
-
       jimp.read(filename, (err, img) => {
         if (err) throw err;
 
@@ -61,11 +55,9 @@ const run = async () => {
 
         let ratio = width > height ? input.size / width : input.size / height;
 
-        img.scale(ratio, input.mode).write(`${input.dir}/${filename.replace(/\.(jpe?g|png|gif|bmp|tiff)$/i, "")}_${width * ratio}x${height * ratio}.${img.getExtension()}`, (err, val, coords) => {
+        img.scale(ratio, input.mode).write(`${input.dir}/${filename.replace(/\.(jpe?g|png|gif|bmp|tiff)$/i, "")}_${width * ratio}x${height * ratio}.${img.getExtension()}`, err => {
           if(err) throw err;
-          spinner.message(`Processing ${filename} ${coords.x}-${coords.y}...`);
         });
-        //fs.renameSync(filename, "Original/" + filename);
       });
     });
   } catch (err) {
